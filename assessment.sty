@@ -1,0 +1,128 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{assessment}[Kayzels Assignment Styles]
+
+% Maths
+\RequirePackage{amssymb}
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+% Lists
+\RequirePackage[inline]{enumitem}
+
+% Language Settings
+\RequirePackage[english=nohyphenation]{hyphsubst}
+\RequirePackage[english]{babel}
+\sloppy
+
+% Bookmarks
+\RequirePackage[bookmarksnumbered]{hyperref}
+\RequirePackage{nameref}
+
+% Headers, Footers, and Margins
+\RequirePackage[margin=1.5cm, vmargin=2cm]{geometry}
+\RequirePackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{Kyzan Hartwig - 17250412}
+\fancyfoot[C]{\thepage}
+\setlength{\headheight}{14pt}
+\setlength{\parindent}{0pt}
+
+% Fonts
+\RequirePackage[T1]{fontenc}
+\RequirePackage{charter}
+\RequirePackage[varqu,varl]{inconsolata}
+\RequirePackage[type1]{cabin}
+\RequirePackage[xcharter]{newtxmath}
+\RequirePackage{bm}
+
+% Bold Math
+\let\oldtextbf\textbf
+\renewcommand{\textbf}[1]{\oldtextbf{\boldmath #1}}
+\makeatletter
+\g@addto@macro\bfseries{\boldmath}
+\makeatother
+\makeatletter
+\g@addto@macro\normalfont{\unboldmath}
+\makeatother
+
+% Tables
+\RequirePackage{tabularray}
+\UseTblrLibrary{booktabs}
+\UseTblrLibrary{varwidth}
+\SetTblrInner[tblr]{measure=vbox}
+
+% Paragraph Spacing
+\RequirePackage{parskip}
+
+% Indented Paragraphs
+\RequirePackage{changepage}
+\newenvironment{indentparagraph}{\begin{adjustwidth}{2em}{}}{\end{adjustwidth}}
+
+% Horizontal Rules at document ends
+\newcommand{\rulebookend}{\vbox{\hrule width \hsize \kern 1mm \hrule width \hsize height 2pt}%
+  \cfoot{}}
+\newcommand{\rulechapterend}{\noindent\rule{\textwidth}{0.4pt}%
+  \cfoot{}
+}
+
+% Images
+\RequirePackage{tikz}
+\RequirePackage{graphicx}
+
+% Images to rest of page
+\RequirePackage[most]{tcolorbox}
+\newtcolorbox{myfigure}[1][]{height fill, space to=\myspace,#1}
+
+% Custom commands
+\newcommand{\concept}[1]{\textbf{#1}}
+
+% New List Types
+\newlist{descriptimize}{description}{2}
+\setlist[descriptimize]{font=\textbullet\enspace}
+
+\newcounter{descriptcount}
+\newlist{descriptenum}{description}{2}
+\setlist[descriptenum, 1]{%
+  before={\setcounter{descriptcount}{0}%
+          \renewcommand*\thedescriptcount{\arabic{descriptcount}}},
+  font=\stepcounter{descriptcount}\thedescriptcount\enspace
+}
+\setlist[descriptenum, 2]{%
+  before={\setcounter{descriptcount}{0}%
+          \renewcommand*\thedescriptcount{(\alph{descriptcount})}},
+  font=\stepcounter{descriptcount}\thedescriptcount\enspace
+}
+
+% Bookmark numbering (include Question)
+\RequirePackage{xpatch}
+\let\origthesection\thesection
+
+\makeatletter
+\xpatchcmd{\addcontentsline}{%
+\Hy@writebookmark{\csname the#2\endcsname}%
+  {#3}%
+  {\@currentHref}%
+  {\Hy@toclevel}%
+  {#1}%
+}{%
+  \begingroup
+    \renewcommand{\thesection}{Question \origthesection}
+    \Hy@writebookmark{\csname the#2\endcsname}%
+    {#3}%
+    {\@currentHref}%
+    {\Hy@toclevel}%
+    {#1}%
+  \endgroup
+}{\typeout{Success}}{}
+\makeatother
+
+% Title formatting (Section to Question)
+\RequirePackage{titlesec}
+\titleformat{\section}{\normalfont\Large\bfseries}{Question \thesection}{1em}{}
+
+% Utility Packages
+\usepackage{fmtcount}
+\usepackage{zref-totpages}
+
